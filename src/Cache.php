@@ -201,7 +201,10 @@ class Cache
         $filename = $this->aliasFilename(array_pop($segments));
         $extension = $this->guessFileExtension($response);
 
-        $file = "{$filename}.{$extension}";
+        if($extension)
+            $file = "{$filename}.{$extension}";
+        else 
+            $file = "{$filename}";
 
         return [$this->getCachePath(implode('/', $segments)), $file];
     }
@@ -241,6 +244,9 @@ class Cache
         if ($response instanceof JsonResponse) {
             return 'json';
         }
+
+        if($response->headers->get('content-type') == 'image/jpeg')
+            return false; 
 
         return 'html';
     }
